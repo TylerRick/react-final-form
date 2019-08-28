@@ -405,6 +405,25 @@ describe('Field', () => {
     expect(CustomSelect.mock.calls[0][0].input.multiple).toBe(true)
   })
 
+  it('should pass ref through to the input', () => {
+    const MyInput = jest.fn(({ input }) => <input {...input} />)
+    const ref = React.createRef()
+    render(
+      <Form onSubmit={onSubmitMock} subscription={{ values: true }}>
+        {() => (
+          <form>
+            <Field name="name" component={MyInput} ref={ref} />
+          </form>
+        )}
+      </Form>
+    )
+
+    expect(MyInput).toHaveBeenCalled()
+    expect(MyInput).toHaveBeenCalledTimes(1)
+    expect(MyInput.mock.calls[0][0].input).not.toHaveProperty('type')
+    expect(ref.current).toBeDefined()
+  })
+
   it('should not pass an undefined type through to the input', () => {
     const MyInput = jest.fn(({ input }) => <input {...input} />)
     render(
